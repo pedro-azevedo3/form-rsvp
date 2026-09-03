@@ -10,7 +10,7 @@ const hasValidPhone = (value) => { const digits = value.replace(/\D/g, ""); retu
 
 function Header({ view, setView }) {
   return <header className="topbar">
-    <button className="brand" onClick={() => setView("guest")}><i />Formatura 2026</button>
+    <button className="brand" onClick={() => setView("guest")}><i />Guilherme Henrique</button>
     <nav aria-label="Navegação principal">
       <button className={view === "guest" ? "active" : ""} onClick={() => setView("guest")}>Convidado</button>
       <button className={view === "host" ? "active" : ""} onClick={() => setView("host")}>Painel do formando</button>
