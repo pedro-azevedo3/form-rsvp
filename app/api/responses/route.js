@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { getDatabase } from "../../../lib/mongodb";
 
 const clean = (value, max = 160) => String(value ?? "").trim().slice(0, max);
+const hasFullName = (value) => value.split(/\s+/).filter(Boolean).length >= 2;
+const validPhone = (value) => { const digits = value.replace(/\D/g, ""); return digits.length === 10 || digits.length === 11; };
+const validShoe = (value) => /^\d+$/.test(value) && Number(value) >= 33 && Number(value) <= 40;
 
 function validate(body) {
   const response = {
@@ -15,10 +18,15 @@ function validate(body) {
     acompanhanteSandalia: body.acomp === 1 && body.acompanhanteSexo === "mulher" ? clean(body.acompanhanteSandalia, 3) : null,
     status: body.status === "vou" ? "vou" : body.status === "nao" ? "nao" : "",
   };
-  if (response.nome.length < 2 || !response.sexo || !response.status) return { error: "Preencha os dados obrigatórios." };
-  if (response.sexo === "mulher" && !response.sandalia) return { error: "Informe o tamanho da sandália." };
-  if (response.acomp && (!response.acompanhanteNome || !response.acompanhanteSexo)) return { error: "Informe o nome e o sexo do acompanhante." };
-  if (response.acompanhanteSexo === "mulher" && !response.acompanhanteSandalia) return { error: "Informe o tamanho da sandália da acompanhante." };
+  if (!hasFullName(response.nome)) return { error: "Informe o nome completo, com pelo menos duas palavras." };
+  if (!response.fone) return { error: "Informe o WhatsApp." };
+  if (!validPhone(response.fone)) return { error: "Informe um WhatsApp válido com DDD." };
+  if (!response.sexo) return { error: "Informe se o convidado é homem ou mulher." };
+  if (!response.status) return { error: "Informe a resposta do convite." };
+  if (response.sexo === "mulher" && !validShoe(response.sandalia)) return { error: "Informe uma sandália válida entre 33 e 40." };
+  if (response.acomp && !hasFullName(response.acompanhanteNome || "")) return { error: "Informe o nome completo do acompanhante, com pelo menos duas palavras." };
+  if (response.acomp && !response.acompanhanteSexo) return { error: "Informe se o acompanhante é homem ou mulher." };
+  if (response.acompanhanteSexo === "mulher" && !validShoe(response.acompanhanteSandalia)) return { error: "Informe uma sandália válida para a acompanhante, entre 33 e 40." };
   return { response };
 }
 

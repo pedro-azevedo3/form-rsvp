@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Abra `http://localhost:3000`. O painel do formando usa a senha de demonstração `formatura2026`.
+Abra `http://localhost:3000` para acessar a aplicação.
 
 Para iniciar o MongoDB local com Docker:
 

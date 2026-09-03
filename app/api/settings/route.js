@@ -3,7 +3,7 @@ import { getDatabase } from "../../../lib/mongodb";
 
 const defaults = {
   totalConvites: 18,
-  mensagemWhatsApp: "Você foi muito importante para que eu chegasse até aqui! Quero celebrar essa conquista com você. Confirme sua presença na minha formatura: formaturabeatriz.com.br/convite",
+  mensagemWhatsApp: "Você foi muito importante para que eu chegasse até aqui! Quero celebrar essa conquista com você. Confirme sua presença na minha formatura: https://guilherme-henrique-direito.up.railway.app/",
 };
 
 export async function GET() {
