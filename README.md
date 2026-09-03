@@ -11,6 +11,16 @@ npm run dev
 
 Abra `http://localhost:3000`. O painel do formando usa a senha de demonstração `formatura2026`.
 
+Para iniciar o MongoDB local com Docker:
+
+```bash
+docker compose up -d
+cp .env.example .env.local
+npm run dev
+```
+
+No Railway, configure `MONGODB_URI=${{MongoDB.MONGO_URL}}` no serviço da aplicação e faça um novo deploy.
+
 ## MongoDB
 
 Crie um serviço MongoDB no mesmo projeto do Railway e adicione estas variáveis ao serviço Next.js:

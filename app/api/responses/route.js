@@ -52,3 +52,37 @@ export async function POST(request) {
     return NextResponse.json({ error: "Não foi possível salvar sua resposta." }, { status: 500 });
   }
 }
+
+export async function PUT(request) {
+  try {
+    const body = await request.json();
+    const originalIdentity = clean(body.originalIdentity, 350).toLocaleLowerCase("pt-BR");
+    const { response, error } = validate(body);
+    if (!originalIdentity) return NextResponse.json({ error: "Convidado não identificado." }, { status: 400 });
+    if (error) return NextResponse.json({ error }, { status: 400 });
+    const identity = `${response.nome}|${response.fone}`.toLocaleLowerCase("pt-BR");
+    const updatedAt = new Date();
+    const db = await getDatabase();
+    const result = await db.collection("respostas").updateOne({ identity: originalIdentity }, { $set: { ...response, identity, updatedAt } });
+    if (!result.matchedCount) return NextResponse.json({ error: "Convidado não encontrado." }, { status: 404 });
+    return NextResponse.json({ ...response, identity, updatedAt: updatedAt.toISOString() });
+  } catch (error) {
+    console.error("Erro ao editar convidado:", error);
+    return NextResponse.json({ error: "Não foi possível editar o convidado." }, { status: 500 });
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    const body = await request.json();
+    const identity = clean(body.identity, 350).toLocaleLowerCase("pt-BR");
+    if (!identity) return NextResponse.json({ error: "Convidado não identificado." }, { status: 400 });
+    const db = await getDatabase();
+    const result = await db.collection("respostas").deleteOne({ identity });
+    if (!result.deletedCount) return NextResponse.json({ error: "Convidado não encontrado." }, { status: 404 });
+    return NextResponse.json({ removed: true });
+  } catch (error) {
+    console.error("Erro ao remover convidado:", error);
+    return NextResponse.json({ error: "Não foi possível remover o convidado." }, { status: 500 });
+  }
+}
